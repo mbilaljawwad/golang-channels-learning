@@ -1,6 +1,8 @@
 package main
 
-import "github.com/mbilaljawwad/golang-channels-learning/internal/buffered_channel"
+import "github.com/mbilaljawwad/golang-channels-learning/internal/channel_select"
+
+// import "github.com/mbilaljawwad/golang-channels-learning/internal/buffered_channel"
 
 // import "github.com/mbilaljawwad/golang-channels-learning/internal/channel"
 
@@ -9,5 +11,8 @@ func main() {
 	// channel.ExecuteExample()
 
 	// Buffered channel example
-	buffered_channel.ExecuteExample()
+	// buffered_channel.ExecuteExample()
+
+	// Channel Select statement example
+	channel_select.ExecuteExample()
 }
