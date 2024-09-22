@@ -1,6 +1,8 @@
 package tests
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"reflect"
 	"testing"
 	"time"
@@ -58,4 +60,31 @@ func BenchmarkConcurrency(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		concurrency.CheckWebsites(slowStubWebsiteChecker, urls)
 	}
+}
+
+func TestRacer(t *testing.T) {
+	slowServer := createServer(20 * time.Millisecond)
+	fastServer := createServer(0 * time.Millisecond)
+
+	defer slowServer.Close()
+	defer fastServer.Close()
+
+	slowURL := slowServer.URL
+	fastURL := fastServer.URL
+
+	results := concurrency.Racer(slowURL, fastURL)
+	expected := fastURL
+
+	if results != expected {
+		t.Errorf("Result: %v, Expected: %v", results, expected)
+	}
+}
+
+func createServer(delay time.Duration) *httptest.Server {
+	return httptest.NewServer(http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			time.Sleep(delay)
+			w.WriteHeader(http.StatusOK)
+		},
+	))
 }
